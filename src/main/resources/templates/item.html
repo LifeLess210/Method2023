@@ -37,7 +37,31 @@
   </style>
 </head>
 <body>
-<div class="card custom-card" style="width: 18rem;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Webshop thing 2000</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/item}">Items</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/newItem}">New Item</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="card custom-card" style="width: 18rem;" th:each="item : ${items}">
   <img src="" class="card-img-top" alt="Image Alt Text">
   <div class="card-body text-center">
     <h5 class="card-title" th:text="${item.name}">Item name</h5>

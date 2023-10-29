@@ -1,23 +1,27 @@
 package com.example.method2023.Controllers;
 
+import com.example.method2023.Dtos.ItemDTO;
 import com.example.method2023.Dtos.UserDTO;
+import com.example.method2023.Entity.Item;
 import com.example.method2023.Entity.User;
+import com.example.method2023.Services.ItemService;
 import com.example.method2023.Services.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AuthController {
     private UserService userService;
-
-    public AuthController(UserService userService) {
+    private ItemService itemService;
+    public AuthController(UserService userService, ItemService itemService) {
         this.userService = userService;
+        this.itemService = itemService;
     }
 
     // handler method to handle home page request
@@ -68,5 +72,31 @@ public class AuthController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @GetMapping("/item")
+    public String itemsPage(Model model){
+        List<ItemDTO> itemDTOS = itemService.getAllItems()
+                .stream()
+                .map(item -> ItemDTO.builder()
+                        .id(item.getId())
+                        .name(item.getName())
+                        .description(item.getDescription())
+                        .itemPicture(item.getItemPicture())
+                        .price(item.getPrice())
+                        .build())
+                .toList();
+        model.addAttribute("items", itemDTOS);
+        return "item";
+    }
+    @GetMapping("/newItem")
+    public String newItemPage(Model model){
+        model.addAttribute("itemDTO", new ItemDTO());
+        return "newItem";
+    }
+    @PostMapping("/newItem/save")
+    public String saveNewItem(@ModelAttribute ItemDTO itemDTO){
+        itemService.saveItem(itemDTO);
+        return "redirect:/newItem";
     }
 }
