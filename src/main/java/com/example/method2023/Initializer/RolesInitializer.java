@@ -27,8 +27,7 @@ public class RolesInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (Objects.isNull(roleService.findById(1))) {
             roleRepository.save(new Role(1, "ROLE_ADMIN"));
-            roleRepository.save(new Role(2, "ROLE_ACCOUNTANT"));
-            roleRepository.save(new Role(3, "ROLE_USER"));
+            roleRepository.save(new Role(2, "ROLE_USER"));
         }
     }
 }

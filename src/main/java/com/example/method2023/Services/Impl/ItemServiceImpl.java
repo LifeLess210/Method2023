@@ -33,4 +33,8 @@ public class ItemServiceImpl implements ItemService {
                 .name(itemDTO.getName())
                 .build();
     }
+
+    public Item findById(int id){
+        return itemRepo.findById(id).orElse(null);
+    }
 }

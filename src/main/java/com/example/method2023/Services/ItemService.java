@@ -11,4 +11,5 @@ public interface ItemService {
     void saveItem(ItemDTO itemDTO);
 
     ArrayList<Item> getAllItems();
+    Item findById(int id);
 }

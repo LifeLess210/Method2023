@@ -29,7 +29,15 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users", "/item", "/newItem", "/newItem/save").hasRole("ADMIN")
+                                .requestMatchers(
+                                        "/users",
+                                        "/shop",
+                                        "/newItem",
+                                        "/newItem/save",
+                                        "users/save",
+                                        "/cart",
+                                        "/add")
+                                .hasRole("ADMIN")
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")

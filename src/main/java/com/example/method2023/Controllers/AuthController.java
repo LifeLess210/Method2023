@@ -1,19 +1,22 @@
 package com.example.method2023.Controllers;
 
+
+import com.example.method2023.Dtos.AddItem;
+import com.example.method2023.Dtos.CartItem;
 import com.example.method2023.Dtos.ItemDTO;
 import com.example.method2023.Dtos.UserDTO;
-import com.example.method2023.Entity.Item;
+import com.example.method2023.Entity.Cart;
 import com.example.method2023.Entity.User;
 import com.example.method2023.Services.ItemService;
 import com.example.method2023.Services.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Controller
 public class AuthController {
@@ -26,7 +29,9 @@ public class AuthController {
 
     // handler method to handle home page request
     @GetMapping("/index")
-    public String home() {
+    public String home(HttpSession session) {
+        Cart cart = (Cart) session.getAttribute("cart");
+        if(Objects.isNull(cart)) session.setAttribute("cart", new Cart());
         return "index";
     }
 
@@ -74,8 +79,10 @@ public class AuthController {
         return "login";
     }
 
-    @GetMapping("/item")
-    public String itemsPage(Model model){
+    @GetMapping("/shop")
+    public String itemsPage(Model model, HttpSession session){
+        Cart cart = (Cart) session.getAttribute("cart");
+        if(Objects.isNull(cart)) session.setAttribute("cart", new Cart());
         List<ItemDTO> itemDTOS = itemService.getAllItems()
                 .stream()
                 .map(item -> ItemDTO.builder()
@@ -87,7 +94,8 @@ public class AuthController {
                         .build())
                 .toList();
         model.addAttribute("items", itemDTOS);
-        return "item";
+        model.addAttribute("addItem", new AddItem());
+        return "shop";
     }
     @GetMapping("/newItem")
     public String newItemPage(Model model){
@@ -98,5 +106,30 @@ public class AuthController {
     public String saveNewItem(@ModelAttribute ItemDTO itemDTO){
         itemService.saveItem(itemDTO);
         return "redirect:/newItem";
+    }
+
+    @PostMapping("users/delete")
+    public String userList(){
+        return "redirect:/users?success";
+    }
+
+    @PostMapping("/add")
+    public String addItemToCart(@ModelAttribute AddItem addItem, HttpSession session) {
+        if(Objects.isNull(addItem)) return "redirect://item?error";
+        Cart userCart = (Cart) session.getAttribute("cart");
+        if (userCart == null) {
+            userCart = new Cart();
+        }
+        userCart.addItem(new CartItem(itemService.findById(addItem.getId()), addItem.getQuantity()));
+        session.setAttribute("cart", userCart);
+        return "redirect:/shop?success";
+    }
+
+    @GetMapping("/cart")
+    public String getCartItems(HttpSession session, Model model) {
+        Cart cart =(Cart)session.getAttribute("cart");
+        model.addAttribute("cart", cart);
+        model.addAttribute("cartItem", new CartItem());
+        return "cart";
     }
 }
