@@ -8,6 +8,7 @@ import com.example.method2023.Dtos.UserDTO;
 import com.example.method2023.Entity.Cart;
 import com.example.method2023.Entity.User;
 import com.example.method2023.Services.ItemService;
+import com.example.method2023.Services.RoleService;
 import com.example.method2023.Services.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,8 @@ import java.util.Objects;
 public class AuthController {
     private UserService userService;
     private ItemService itemService;
+    private RoleService roleService;
+
     public AuthController(UserService userService, ItemService itemService) {
         this.userService = userService;
         this.itemService = itemService;
@@ -31,7 +34,7 @@ public class AuthController {
     @GetMapping("/index")
     public String home(HttpSession session) {
         Cart cart = (Cart) session.getAttribute("cart");
-        if(Objects.isNull(cart)) session.setAttribute("cart", new Cart());
+        if (Objects.isNull(cart)) session.setAttribute("cart", new Cart());
         return "index";
     }
 
@@ -80,9 +83,9 @@ public class AuthController {
     }
 
     @GetMapping("/shop")
-    public String itemsPage(Model model, HttpSession session){
+    public String itemsPage(Model model, HttpSession session) {
         Cart cart = (Cart) session.getAttribute("cart");
-        if(Objects.isNull(cart)) session.setAttribute("cart", new Cart());
+        if (Objects.isNull(cart)) session.setAttribute("cart", new Cart());
         List<ItemDTO> itemDTOS = itemService.getAllItems()
                 .stream()
                 .map(item -> ItemDTO.builder()
@@ -97,25 +100,27 @@ public class AuthController {
         model.addAttribute("addItem", new AddItem());
         return "shop";
     }
+
     @GetMapping("/newItem")
-    public String newItemPage(Model model){
+    public String newItemPage(Model model) {
         model.addAttribute("itemDTO", new ItemDTO());
         return "newItem";
     }
+
     @PostMapping("/newItem/save")
-    public String saveNewItem(@ModelAttribute ItemDTO itemDTO){
+    public String saveNewItem(@ModelAttribute ItemDTO itemDTO) {
         itemService.saveItem(itemDTO);
         return "redirect:/newItem";
     }
 
     @PostMapping("users/delete")
-    public String userList(){
+    public String userList() {
         return "redirect:/users?success";
     }
 
     @PostMapping("/add")
     public String addItemToCart(@ModelAttribute AddItem addItem, HttpSession session) {
-        if(Objects.isNull(addItem)) return "redirect://item?error";
+        if (Objects.isNull(addItem)) return "redirect://item?error";
         Cart userCart = (Cart) session.getAttribute("cart");
         if (userCart == null) {
             userCart = new Cart();
@@ -127,9 +132,21 @@ public class AuthController {
 
     @GetMapping("/cart")
     public String getCartItems(HttpSession session, Model model) {
-        Cart cart =(Cart)session.getAttribute("cart");
+        Cart cart = (Cart) session.getAttribute("cart");
         model.addAttribute("cart", cart);
         model.addAttribute("cartItem", new CartItem());
         return "cart";
     }
+
+    @PostMapping("changeUserRole")
+    public String changeUserRole(@ModelAttribute int id) {
+        User user = (User) userService.findById(id);
+        if (user.getRole().getId() == 1) {
+            user.setRole(roleService.findById(2));
+        } else {
+            user.setRole(roleService.findById(1));
+        }
+        return "redirect:/users";
+    }
+
 }

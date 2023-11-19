@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ArrayList<UserDTO> findAllUsers() {
         ArrayList<User> users = userRepository.findAll();
-        return users.stream().map((user) -> convertEntityToDto(user))
+        return users.stream().map(this::convertEntityToDto)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -76,6 +76,8 @@ public class UserServiceImpl implements UserService {
         userDto.setLastName(name[1]);
         userDto.setAddress(user.getAddress());
         userDto.setEmail(user.getEmail());
+        userDto.setRole(user.getRole().getName());
+        userDto.setId(Long.valueOf(user.getId()));
         return userDto;
     }
 }

@@ -25,7 +25,7 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/cart}">Cart</a>
                 </li>
-                <div style="float: right" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                <div style="float: right; display: inline-flex" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="@{/newItem}">New Item</a>
                     </li>
@@ -33,6 +33,9 @@
                         <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
                     </li>
                 </div>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -47,6 +50,8 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
+            <th>Id</th>
+            <th>Role</th>
         </tr>
         </thead>
         <tbody>
@@ -54,9 +59,23 @@
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.email}"></td>
+            <td th:text="${user.id}"></td>
+            <td><button class="userRole" type="button" th:id="${user.id}" th:text="${user.role}"></button></td>
         </tr>
         </tbody>
     </table>
 </div>
 </body>
+<script>
+    $.addEventListener($(".userRole", function () {
+        let id = $(this).id;
+        $.ajax({
+            type: "post",
+            data: id,
+            url: "changeUserRole",
+            async: false,
+        })
+    }))
+
+</script>
 </html>
