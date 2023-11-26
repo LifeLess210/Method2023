@@ -5,33 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <title>Item</title>
-
     <style>
-        .btn-custom {
-            background-color: black;
-            color: white;
-        }
         .custom-card {
-            border: 2px solid black;
+            border-left: none;
+            border-right: none;
+            border-radius: 0px;
         }
-        .card-body {
-            display: inline-block;
-        }
-        .btn-custom:hover {
-            border: 2px solid black;
-        }
-        .price-text {
-            line-height: 2.2;
-        }
-        .price-text,
-        .btn-custom {
-            margin: 20px;
-        }
-        .price-text {
+        .card-title, .price-text {
             font-weight: bold;
         }
-        .card-title {
-            line-height: 4;
+        .price-text {
+            color: red;
+        }
+        .custom-card1 {
+            border-top: 1px;
+            border-left: none;
+            border-right: none;
+            border-radius: 0px;
+        }
+        .summary-text {
+            font-weight: bold;
         }
 
     </style>
@@ -66,18 +59,35 @@
         </div>
     </div>
 </nav>
-<div class="card custom-card" style="width: 18rem;" th:each="item : ${cart.cart}">
-    <img src="" class="card-img-top" alt="Image Alt Text">
+
+
+
+<div class="card custom-card mx-auto my-5" style="width: 60rem;" th:each="item : ${cart.cart}">
     <div class="card-body text-center">
-        <p th:text="'Amount: ' + ${item.quantity}"></p>
-        <h5 class="card-title" th:text="${item.item.name}">Item name</h5>
-        <p class="card-text" th:text="${item.item.description}">A small description of the item</p>
-        <div class="d-flex justify-content-center">
-            <p class="card-text price-text" th:text="'Price: ' + ${item.item.price} + ' Ft'">Price: 100</p>
+        <div class="row align-items-center">
+            <div class="col">
+                <h5 class="card-title" th:text="${item.item.name}">Item name</h5>
+            </div>
+            <div class="col">
+                <p class="card-text" th:text="${item.item.description}">A small description of the item</p>
+            </div>
+            <div class="col quantity">
+                <p class="card-text" th:text="${item.quantity} + ' db'">4</p>
+            </div>
+            <div class="col">
+                <p class="card-text price-text" th:text="${item.item.price} + ' Ft'">Price: 100</p>
+            </div>
         </div>
     </div>
 </div>
-<h1 th:text="'Full price:' + ${cart.sum()} + ' Ft'"></h1>
+
+
+<div class="card custom-card1 mx-auto my-5" style="width: 60rem;">
+    <div class="card-footer text-end">
+        <p class="card-text summary-text" th:text="'Full price: ' + ${cart.sum()} + ' Ft'"></p>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

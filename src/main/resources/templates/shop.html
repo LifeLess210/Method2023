@@ -7,31 +7,37 @@
   <title>Item</title>
 
   <style>
-    .btn-custom {
+    button {
       background-color: black;
       color: white;
+      padding: 5px;
+      border-radius: 9px;
     }
     .custom-card {
-      border: 2px solid black;
+      border: 1p solid black;
     }
     .card-body {
       display: inline-block;
+      padding-bottom: 0px;
     }
-    .btn-custom:hover {
+    button:hover {
       border: 2px solid black;
-    }
-    .price-text {
-      line-height: 2.2;
-    }
-    .price-text,
-    .btn-custom {
-      margin: 20px;
+      background-color: white;
+      color: black;
     }
     .price-text {
       font-weight: bold;
+      color: red;
     }
-    .card-title {
-      line-height: 4;
+    price-text,
+    button {
+      margin: 30px;
+    }
+    .navbar {
+      margin-bottom: 100px;
+    }
+    .card-text {
+      word-wrap: break-word;
     }
 
   </style>
@@ -68,19 +74,26 @@
     </div>
   </div>
 </nav>
-<div class="card custom-card" style="width: 18rem;" th:each="item : ${items}">
-  <form method="post" role="form" th:action="@{/add}" th:object="${addItem}">
-    <div class="card-body text-center">
-      <h5 class="card-title" th:text="${item.name}">Item name</h5>
-      <p class="card-text" th:text="${item.description}">A small description of the item</p>
-      <p class="card-text price-text" th:text="'Price: ' + ${item.price} + ' Ft'">Price: 100</p>
-      <input type="hidden" name="id" th:value="${item.id}" />
-      <input type="number" name="quantity" value="0" />
-      <button type="submit">To cart</button>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-4">
+    <div th:each="item : ${items}" class="col mb-4">
+      <div class="card custom-card" style="width: 18rem;">
+        <form method="post" role="form" th:action="@{/add}" th:object="${addItem}">
+          <img src="/Images/placeholder.jpg" class="card-img-top" alt="Placeholder Image">
+          <div class="card-body text-center">
+            <h5 class="card-title" th:text="${item.name}">Item name</h5>
+            <p class="card-text" th:text="${item.description}">A small description of the item</p>
+            <p class="card-text price-text" th:text="'Price: ' + ${item.price} + ' Ft'">Price: 100</p>
+            <input type="hidden" name="id" th:value="${item.id}" />
+            <input type="number" name="quantity" value="0" />
+            <button type="submit">Add to cart</button>
+          </div>
+        </form>
+      </div>
     </div>
-
+  </div>
+</div>
   </form>
-
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
