@@ -1,16 +1,14 @@
 package com.example.method2023.Controllers;
 
 
-import com.example.method2023.Dtos.AddItem;
-import com.example.method2023.Dtos.CartItem;
-import com.example.method2023.Dtos.ItemDTO;
-import com.example.method2023.Dtos.UserDTO;
+import com.example.method2023.Dtos.*;
 import com.example.method2023.Entity.Cart;
 import com.example.method2023.Entity.User;
 import com.example.method2023.Services.ItemService;
 import com.example.method2023.Services.RoleService;
 import com.example.method2023.Services.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,14 +19,14 @@ import java.util.Objects;
 
 @Controller
 public class AuthController {
+    @Autowired
     private UserService userService;
+    @Autowired
     private ItemService itemService;
+    @Autowired
     private RoleService roleService;
 
-    public AuthController(UserService userService, ItemService itemService) {
-        this.userService = userService;
-        this.itemService = itemService;
-    }
+
 
     // handler method to handle home page request
     @GetMapping("/index")
@@ -73,6 +71,7 @@ public class AuthController {
     public String users(Model model) {
         List<UserDTO> users = userService.findAllUsers();
         model.addAttribute("users", users);
+        model.addAttribute("roleChange", new UserRoleChangeDTO());
         return "users";
     }
 
@@ -139,14 +138,22 @@ public class AuthController {
     }
 
     @PostMapping("changeUserRole")
-    public String changeUserRole(@ModelAttribute int id) {
-        User user = (User) userService.findById(id);
-        if (user.getRole().getId() == 1) {
-            user.setRole(roleService.findById(2));
-        } else {
-            user.setRole(roleService.findById(1));
+    public String changeUserRole(@ModelAttribute UserRoleChangeDTO userRoleChangeDTO) {
+        try {
+            User user = (User) userService.findById(userRoleChangeDTO.getId());
+            if (user.getRole().getId() == 1) {
+                user.setRole(roleService.findById(2));
+                userService.saveUser(user);
+            } else {
+                user.setRole(roleService.findById(1));
+                userService.saveUser(user);
+            }
+            return "redirect:/users";
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return "redirect:/users";
         }
-        return "redirect:/users";
     }
+
 
 }
