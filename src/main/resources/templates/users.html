@@ -60,22 +60,18 @@
             <td th:text="${user.lastName}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.id}"></td>
-            <td><button class="userRole" type="button" th:id="${user.id}" th:text="${user.role}"></button></td>
+            <form method="post"
+                  role="form"
+                  th:action="@{/changeUserRole}"
+                  th:object="${roleChange}"
+                  >
+                <div th:text="${user.id}"></div>
+            <td><input  type="number" style="display: none" name="id" th:value="${user.id}"> <button type="submit" class="userRole" th:text="${user.role}"></button></td>
+            </form>
         </tr>
         </tbody>
     </table>
 </div>
 </body>
-<script>
-    $.addEventListener($(".userRole", function () {
-        let id = $(this).id;
-        $.ajax({
-            type: "post",
-            data: id,
-            url: "changeUserRole",
-            async: false,
-        })
-    }))
 
-</script>
 </html>
